@@ -7,6 +7,7 @@ const mongoose = require("mongoose");
 
 // FIXME: custom files
 const ContactRoute = require("./api/routes/contacts");
+const usersRoute = require("./api/routes/user");
 
 // FIXME: custom
 const app = express();
@@ -18,6 +19,7 @@ app.use(cors());
 
 // FIXME: middleware
 app.use("/api/contacts", ContactRoute); // this is contacts route
+app.use("/api/user", usersRoute); // This is login/signup route
 
 // FIXME: Basic Routers
 app.get("/posts", (req, res) => {
