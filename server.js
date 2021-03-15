@@ -8,6 +8,8 @@ const mongoose = require("mongoose");
 // FIXME: custom files
 const ContactRoute = require("./api/routes/contacts");
 const usersRoute = require("./api/routes/user");
+const Contact = require("./api/models/Contacts");
+const User = require("./api/models/Users");
 
 // FIXME: custom
 const app = express();
@@ -28,7 +30,11 @@ app.get("/posts", (req, res) => {
 
 // default route || home route
 app.get("/", (req, res) => {
-	res.json({ msg: "Hello World!" });
+	Contact.find()
+		.then(users => res.status(200).json(users))
+		.catch(err =>
+			res.status(500).json({ msg: "There is no users.", error: err })
+		);
 });
 
 // FIXME: server listen and database connection
