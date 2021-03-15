@@ -1,6 +1,11 @@
 const router = require("express").Router();
 const User = require("../models/Users");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+
+// secret key
+const secretKey = process.env.SECRET_KEY || null;
+const authentication = require("../middlewares/authenticate");
 
 // login
 router.post("/login", (req, res, next) => {
@@ -14,7 +19,14 @@ router.post("/login", (req, res, next) => {
 				}
 
 				if (result) {
-					res.status(200).json({ msg: "Successfully login!" });
+					// FIXME: jwt web token
+					let token = jwt.sign(
+						{ email: user.email, id: user._id },
+						secretKey,
+						{ expiresIn: "5h" }
+					);
+
+					res.status(200).json({ msg: "Successfully login!", token });
 				} else {
 					res.status(401).json({ msg: "Invalid Credentials!" });
 				}
@@ -23,11 +35,6 @@ router.post("/login", (req, res, next) => {
 			res.status(401).json({ msg: "Invalid Credentials!" });
 		}
 	});
-});
-
-// TODO: to be removed
-router.get("/login", (req, res, next) => {
-	res.status(200).json({ mas: "You are in login page" });
 });
 
 // signup | register
@@ -46,6 +53,7 @@ router.post("/signup", (req, res, next) => {
 			.then(data => {
 				res.status(201).json({
 					msg: "Welcome! new user has been created!" + username,
+					info: data,
 				});
 			})
 			.catch(err => {
@@ -57,16 +65,8 @@ router.post("/signup", (req, res, next) => {
 	});
 });
 
-// signup | register TODO: to be removed
-router.get("/signup", (req, res, next) => {
-	const { email, password, username } = req.body;
-
-	console.log("Hello! This is /signup get!");
-	res.json({ msg: "Try to do something" });
-});
-
 // get all users
-router.get("/", (req, res, next) => {
+router.get("/", authentication, (req, res, next) => {
 	User.find()
 		.then(users => res.status(200).json(users))
 		.catch(err => {

@@ -1,6 +1,7 @@
 const router = require("express").Router();
 
 const Contact = require("../models/Contacts");
+const authentication = require("../middlewares/authenticate");
 
 router.get("/", (req, res, next) => {
 	Contact.find()
@@ -12,7 +13,7 @@ router.get("/", (req, res, next) => {
 		});
 });
 
-router.post("/", (req, res, next) => {
+router.post("/", authentication, (req, res, next) => {
 	// this is post method to store in data base
 	let { name, phone, email } = req.body;
 	const contact = new Contact({ name, phone, email });
@@ -41,7 +42,7 @@ router.get("/:id", (req, res, next) => {
 });
 
 // modify a contact
-router.put("/:id", (req, res, next) => {
+router.put("/:id", authentication, (req, res, next) => {
 	let id = req.params.id;
 	const { name, phone, email } = req.body;
 
@@ -56,7 +57,7 @@ router.put("/:id", (req, res, next) => {
 });
 
 // delete a contact
-router.delete("/:id", (req, res, next) => {
+router.delete("/:id", authentication, (req, res, next) => {
 	let id = req.params.id;
 
 	Contact.findOneAndDelete(id)

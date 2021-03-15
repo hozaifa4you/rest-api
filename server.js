@@ -19,7 +19,7 @@ app.use(cors());
 
 // FIXME: middleware
 app.use("/api/contacts", ContactRoute); // this is contacts route
-app.use("/api/user", usersRoute); // This is login/signup route
+app.use("/api/users", usersRoute); // This is login/signup route
 
 // FIXME: Basic Routers
 app.get("/posts", (req, res) => {
